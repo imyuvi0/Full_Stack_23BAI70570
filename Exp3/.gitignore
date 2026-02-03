@@ -3,6 +3,4 @@ dist
 build
 .env
 ../Case-Study/
-../Case/
 ../Case_Study/
-git add .gitignore
