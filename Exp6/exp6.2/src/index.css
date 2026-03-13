@@ -1,0 +1,52 @@
+/* --- LOGIN COMPONENT STYLES --- */
+
+.login-card {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.login-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.login-group input {
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding doesn't push width out */
+}
+
+.login-btn {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.error-message {
+  background-color: #fce4e4;
+  color: var(--danger-color);
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #fcc2c2;
+}
+
+.btn-logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.btn-logout:hover {
+  background-color: #5a6268;
+}
