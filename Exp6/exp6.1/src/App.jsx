@@ -28,7 +28,6 @@ const App = () => {
       setFormData({ ...formData, [name]: value });
     }
 
-    // Auto-calculate age if DOB changes
     if (name === 'dob') {
       calculateAge(value);
     }
@@ -101,7 +100,7 @@ const today = new Date().toISOString().split('T')[0];
   <input 
     type="date" 
     name="dob" 
-    max={today} // This grays out all future dates in the calendar
+    max={today} 
     value={formData.dob} 
     onChange={handleChange} 
     required 
