@@ -14,7 +14,7 @@ public class Expense {
     private double amount;
     private String category;
 
-    private LocalDate date; // ✅ ADD THIS
+    private LocalDate date;
 
     // GETTERS & SETTERS
 

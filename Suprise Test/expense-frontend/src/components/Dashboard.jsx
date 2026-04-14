@@ -30,13 +30,11 @@ function Dashboard({ setToken }) {
 
   const token = localStorage.getItem("token");
 
-  // LOGOUT
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
   };
 
-  // FETCH
   const fetchExpenses = async () => {
     const res = await fetch("http://localhost:8080/api/expenses", {
       headers: { Authorization: `Bearer ${token}` },
@@ -46,7 +44,6 @@ function Dashboard({ setToken }) {
     if (Array.isArray(data)) setExpenses(data);
   };
 
-  // ADD / UPDATE
   const handleSubmit = async () => {
     const url = editId
       ? `http://localhost:8080/api/expenses/${editId}`
@@ -76,17 +73,14 @@ function Dashboard({ setToken }) {
     fetchExpenses();
   };
 
-  // DELETE
   const deleteExpense = async (id) => {
     await fetch(`http://localhost:8080/api/expenses/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
-
     fetchExpenses();
   };
 
-  // EDIT
   const editExpense = (e) => {
     setTitle(e.title);
     setAmount(e.amount);
@@ -98,19 +92,13 @@ function Dashboard({ setToken }) {
     fetchExpenses();
   }, []);
 
-  // ===== CALCULATIONS =====
-
+  // CALCULATIONS
   const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
-
-  const average = expenses.length
-    ? (total / expenses.length).toFixed(2)
-    : 0;
-
+  const average = expenses.length ? (total / expenses.length).toFixed(2) : 0;
   const highest = expenses.reduce(
     (max, e) => (e.amount > max.amount ? e : max),
     { amount: 0 }
   );
-
   const recent = [...expenses].slice(-3).reverse();
 
   const categoryData = {};
@@ -135,8 +123,7 @@ function Dashboard({ setToken }) {
     ],
   };
 
-  // ===== MONTHLY GRAPH =====
-
+  // MONTH GRAPH
   const monthNames = [
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
@@ -172,10 +159,41 @@ function Dashboard({ setToken }) {
           💸 Tracker
         </h2>
 
-        <ul className="space-y-5 text-gray-600">
-          <li onClick={() => setActivePage("dashboard")} className="cursor-pointer hover:text-purple-600">Dashboard</li>
-          <li onClick={() => setActivePage("expenses")} className="cursor-pointer hover:text-purple-600">Expenses</li>
-          <li onClick={() => setActivePage("reports")} className="cursor-pointer hover:text-purple-600">Reports</li>
+        <ul className="space-y-3">
+
+          <li
+            onClick={() => setActivePage("dashboard")}
+            className={`cursor-pointer px-4 py-2 rounded-lg transition 
+              ${activePage === "dashboard"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            Dashboard
+          </li>
+
+          <li
+            onClick={() => setActivePage("expenses")}
+            className={`cursor-pointer px-4 py-2 rounded-lg transition 
+              ${activePage === "expenses"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            Expenses
+          </li>
+
+          <li
+            onClick={() => setActivePage("reports")}
+            className={`cursor-pointer px-4 py-2 rounded-lg transition 
+              ${activePage === "reports"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            Reports
+          </li>
+
         </ul>
       </div>
 
@@ -203,28 +221,13 @@ function Dashboard({ setToken }) {
           {activePage === "dashboard" && (
             <>
               <div className="grid grid-cols-4 gap-6 mb-6">
-
-                <div className="bg-purple-500 text-white p-6 rounded-xl">
-                  ₹{total}
-                </div>
-
-                <div className="bg-blue-500 text-white p-6 rounded-xl">
-                  ₹{average}
-                </div>
-
-                <div className="bg-red-500 text-white p-6 rounded-xl">
-                  ₹{highest.amount}
-                </div>
-
-                <div className="bg-green-500 text-white p-6 rounded-xl">
-                  {expenses.length}
-                </div>
-
+                <div className="bg-purple-500 text-white p-6 rounded-xl">₹{total}</div>
+                <div className="bg-blue-500 text-white p-6 rounded-xl">₹{average}</div>
+                <div className="bg-red-500 text-white p-6 rounded-xl">₹{highest.amount}</div>
+                <div className="bg-green-500 text-white p-6 rounded-xl">{expenses.length}</div>
               </div>
 
               <div className="grid grid-cols-3 gap-6">
-
-                {/* MONTH GRAPH */}
                 <div className="bg-white p-6 rounded-xl shadow">
                   <p className="mb-2">Monthly Spending</p>
                   <div className="h-40">
@@ -232,7 +235,6 @@ function Dashboard({ setToken }) {
                   </div>
                 </div>
 
-                {/* RECENT */}
                 <div className="bg-white p-6 rounded-xl shadow">
                   <p className="mb-3">Recent</p>
                   {recent.map((r) => (
@@ -243,11 +245,9 @@ function Dashboard({ setToken }) {
                   ))}
                 </div>
 
-                {/* PIE */}
                 <div className="bg-white p-6 rounded-xl shadow">
                   <Pie data={chartData} />
                 </div>
-
               </div>
             </>
           )}
@@ -295,11 +295,26 @@ function Dashboard({ setToken }) {
 
           {/* REPORTS */}
           {activePage === "reports" && (
-            <div className="bg-white p-6 rounded-xl shadow max-w-xl">
+            <div className="bg-white p-6 rounded-xl shadow max-w-3xl">
 
-              <Pie data={chartData} />
+              {/* PIE + BAR */}
+              <div className="grid grid-cols-2 gap-6">
 
-              <table className="w-full mt-4">
+                <div>
+                  <Pie data={chartData} />
+                </div>
+
+                <div>
+                  <p className="mb-2">Monthly Spending</p>
+                  <div className="h-52">
+                    <Bar data={barData} options={{ maintainAspectRatio: false }} />
+                  </div>
+                </div>
+
+              </div>
+
+              {/* TABLE */}
+              <table className="w-full mt-6">
                 <thead>
                   <tr>
                     <th className="text-left">Category</th>
@@ -318,6 +333,7 @@ function Dashboard({ setToken }) {
               </table>
 
               <p className="mt-4">Total: ₹{total}</p>
+
             </div>
           )}
 

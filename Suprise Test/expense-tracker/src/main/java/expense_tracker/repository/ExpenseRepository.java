@@ -1,12 +1,13 @@
 package expense_tracker.repository;
 
 import expense_tracker.model.Expense;
-import expense_tracker.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
-    List<Expense> findByUser(User user); // 🔥 VERY IMPORTANT
+    // ❌ REMOVE THIS (IMPORTANT)
+    // List<Expense> findByUser(User user);
+
 }

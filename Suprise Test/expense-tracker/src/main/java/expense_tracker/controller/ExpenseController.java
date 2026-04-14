@@ -1,11 +1,7 @@
 package expense_tracker.controller;
 
 import expense_tracker.model.Expense;
-import expense_tracker.model.User;
 import expense_tracker.repository.ExpenseRepository;
-import expense_tracker.repository.UserRepository;
-import expense_tracker.security.JwtUtil;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,62 +15,42 @@ public class ExpenseController {
     @Autowired
     private ExpenseRepository expenseRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    // GET
+    // GET ALL
     @GetMapping
-    public List<Expense> getExpenses(@RequestHeader("Authorization") String token) {
-
-        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        return expenseRepository.findByUser(user);
+    public List<Expense> getAllExpenses() {
+        return expenseRepository.findAll();
     }
 
     // ADD
     @PostMapping
-    public String addExpense(@RequestHeader("Authorization") String token,
-                            @RequestBody Expense expense) {
-
-        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        expense.setUser(user);
+    public String addExpense(@RequestBody Expense expense) {
         expenseRepository.save(expense);
-
-        return "Added";
+        return "Expense added successfully";
     }
 
-    // DELETE ✅ FIXED
-    @DeleteMapping("/{id}")
-    public String deleteExpense(@PathVariable Long id,
-                               @RequestHeader("Authorization") String token) {
-
-        Expense expense = expenseRepository.findById(id).orElse(null);
-
-        if (expense == null) return "Not found";
-
-        expenseRepository.delete(expense);
-        return "Deleted";
-    }
-
-    // UPDATE ✅ FIXED
+    // UPDATE
     @PutMapping("/{id}")
-    public Expense updateExpense(@PathVariable Long id,
-                                @RequestBody Expense updatedExpense) {
+    public String updateExpense(@PathVariable Long id, @RequestBody Expense updatedExpense) {
 
         Expense expense = expenseRepository.findById(id).orElse(null);
 
-        if (expense == null) return null;
+        if (expense != null) {
+            expense.setTitle(updatedExpense.getTitle());
+            expense.setAmount(updatedExpense.getAmount());
+            expense.setCategory(updatedExpense.getCategory());
+            expense.setDate(updatedExpense.getDate());
 
-        expense.setTitle(updatedExpense.getTitle());
-        expense.setAmount(updatedExpense.getAmount());
-        expense.setCategory(updatedExpense.getCategory());
+            expenseRepository.save(expense);
+            return "Expense updated successfully";
+        }
 
-        return expenseRepository.save(expense);
+        return "Expense not found";
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public String deleteExpense(@PathVariable Long id) {
+        expenseRepository.deleteById(id);
+        return "Expense deleted successfully";
     }
 }
